@@ -1,4 +1,21 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 📸 Photobooth App
+
+A modern, interactive photobooth application built with Next.js that allows users to capture photos, add stickers, apply filters, and create personalized photo posters.
+
+## ✨ Features
+
+- 📷 **Live Camera Feed** - Real-time camera preview with countdown timer
+- 🎯 **Capture Multiple Photos** - Take up to 4 photos in sequence
+- 🎨 **Photo Editing** - Add stickers, text, and apply filters to your photos
+- 🖼️ **Custom Frames** - Choose from various decorative frames
+- 👤 **Personalization** - Add your name to create a custom poster
+- 💾 **Download** - Save your edited photos and final poster
+- 🎭 **Filters** - Apply artistic filters like Grayscale, Sepia, Vintage, and more
+- ✏️ **Text Customization** - Add text with custom fonts, colors, and sizes
+
+## 📸 Screenshots
+
+![Photobooth App](./screenshots/image.png)
 
 ## Getting Started
 
@@ -15,6 +32,62 @@ bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+## 🎯 How to Use
+
+1. **Start Camera** - Click the camera button to enable your webcam
+2. **Capture Photos** - Click the capture button to start a 3-second countdown, then strike a pose!
+3. **Take Multiple Shots** - Capture up to 4 photos (the app will automatically move to the next shot)
+4. **Edit Photos** - After capturing, add stickers, text, filters, and frames to each photo
+5. **Create Poster** - Enter your name to generate a personalized photo poster
+6. **Download** - Save your edited photos or the final poster
+
+## 🛠️ Tech Stack
+
+- **Next.js 15** - React framework with App Router
+- **TypeScript** - Type-safe development
+- **Fabric.js** - Canvas manipulation and image editing
+- **Tailwind CSS** - Styling and responsive design
+- **HTML5 Canvas** - Image processing and rendering
+
+## 📁 Project Structure
+
+```
+photobooth_app/
+├── app/
+│   ├── page.tsx          # Main photobooth component
+│   ├── layout.tsx        # Root layout
+│   └── globals.css       # Global styles
+├── public/
+│   ├── stickers/         # Sticker images
+│   ├── frame/            # Frame overlays
+│   ├── character/        # Character decorations
+│   └── images/           # Background images
+└── screenshots/          # App screenshots
+```
+
+## 🎨 Available Features
+
+### Stickers
+- 14 different sticker designs
+- Drag and drop placement
+- Resizable and rotatable
+
+### Filters
+- Grayscale
+- Sepia
+- Vintage
+- Blur
+- Sharpen
+- Emboss
+- Invert
+- Brightness
+- Contrast
+
+### Frames
+- Multiple decorative frame styles
+- Character overlays
+- Custom positioning
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
