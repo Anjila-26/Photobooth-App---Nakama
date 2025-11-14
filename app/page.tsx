@@ -26,6 +26,7 @@ export default function Camera() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fabricCanvasRef = useRef<fabric.Canvas | null>(null);
   const editCanvasRef = useRef<HTMLCanvasElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [isCameraOn, setIsCameraOn] = useState(false);
   const [capturedImages, setCapturedImages] = useState<string[]>([]);
@@ -134,6 +135,30 @@ export default function Camera() {
   // Clear all photos
   const clearAllPhotos = () => {
     setCapturedImages([]);
+  };
+
+  // Handle file upload
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file && file.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const imageDataUrl = e.target?.result as string;
+        setCapturedImages(prev => {
+          if (prev.length >= 1) {
+            return [imageDataUrl]; // Replace existing photo
+          }
+          return [...prev, imageDataUrl];
+        });
+      };
+      reader.readAsDataURL(file);
+    } else {
+      alert('Please select a valid image file');
+    }
+    // Reset input so same file can be selected again
+    if (event.target) {
+      event.target.value = '';
+    }
   };
 
   // Go to edit page
@@ -649,17 +674,37 @@ export default function Camera() {
         {/* Controls */}
         <div className="flex gap-4 flex-wrap justify-center">
           {!isCameraOn ? (
-            <button
-              onClick={startCamera}
-              className="px-8 py-4 text-black hover:opacity-80 font-bold text-sm border-4 border-black shadow-2xl transition-all"
-              style={{ 
-                backgroundColor: '#F3CFEB',
-                clipPath: 'polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px))',
-                imageRendering: 'pixelated'
-              }}
-            >
-              Start Camera
-            </button>
+            <>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleFileUpload}
+                className="hidden"
+              />
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                className="px-8 py-4 text-black hover:opacity-80 font-bold text-sm border-4 border-black shadow-2xl transition-all"
+                style={{ 
+                  backgroundColor: '#F3CFEB',
+                  clipPath: 'polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px))',
+                  imageRendering: 'pixelated'
+                }}
+              >
+                Upload Photo
+              </button>
+              <button
+                onClick={startCamera}
+                className="px-8 py-4 text-black hover:opacity-80 font-bold text-sm border-4 border-black shadow-2xl transition-all"
+                style={{ 
+                  backgroundColor: '#F3CFEB',
+                  clipPath: 'polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px))',
+                  imageRendering: 'pixelated'
+                }}
+              >
+                Start Camera
+              </button>
+            </>
           ) : (
             <>
               <button
