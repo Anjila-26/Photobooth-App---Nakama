@@ -238,14 +238,48 @@ export default function Camera() {
           const photoImg = await fabric.FabricImage.fromURL(capturedImages[currentEditIndex]);
           if (!mounted) return;
 
-          photoImg.scaleToWidth(410);
-          photoImg.scaleToHeight(308.5);
+          // Black area in SVG: x:59.5-684, y:234.5-704 (at 759x1117)
+          // Scaled to 500x735: multiply by (500/759)
+          const scale = 500 / 759;
+          const photoLeft = 59.5 * scale; // ~39.2px
+          const photoTop = 234.5 * scale; // ~154.7px
+          const photoWidth = (684 - 59.5) * scale; // ~411.7px
+          const photoHeight = (704 - 234.5) * scale; // ~309.6px
+          
+          // Get the original dimensions to calculate aspect ratio
+          const imgWidth = photoImg.width || 1;
+          const imgHeight = photoImg.height || 1;
+          const imgAspect = imgWidth / imgHeight;
+          const frameAspect = photoWidth / photoHeight;
+          
+          // Use cover logic: scale to fill the frame completely
+          let scaleX, scaleY;
+          if (imgAspect > frameAspect) {
+            // Image is wider - fit to height
+            scaleY = photoHeight / imgHeight;
+            scaleX = scaleY;
+          } else {
+            // Image is taller - fit to width
+            scaleX = photoWidth / imgWidth;
+            scaleY = scaleX;
+          }
+          
           photoImg.set({
-            left: 40,
-            top: 154.5,
+            left: photoLeft,
+            top: photoTop,
+            scaleX: scaleX,
+            scaleY: scaleY,
             selectable: false,
             evented: false,
+            clipPath: new fabric.Rect({
+              left: photoLeft,
+              top: photoTop,
+              width: photoWidth,
+              height: photoHeight,
+              absolutePositioned: true,
+            }),
           });
+          
           canvas.add(photoImg);
 
           // Ensure photo is above frame's black rectangle
@@ -652,13 +686,18 @@ export default function Camera() {
               autoPlay
               playsInline
               className={`border-2 border-black ${isCameraOn ? 'block' : 'hidden'}`}
-              style={{ maxWidth: '640px', width: '100%', minHeight: '480px', transform: 'scaleX(-1)' }}
+              style={{ 
+                width: '640px', 
+                height: '480px', 
+                transform: 'scaleX(-1)',
+                objectFit: 'cover'
+              }}
             />
             
             {!isCameraOn && capturedImages.length === 0 && (
               <div 
                 className="w-full flex items-center justify-center border-2 border-black" 
-                style={{ minHeight: '480px', maxWidth: '640px', backgroundColor: '#F3CFEB' }}
+                style={{ width: '640px', height: '480px', backgroundColor: '#F3CFEB' }}
               >
                 <p className="text-black text-sm font-bold px-4 text-center">
                   Camera Off
