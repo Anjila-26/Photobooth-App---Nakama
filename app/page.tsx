@@ -430,14 +430,13 @@ export default function Camera() {
       fabricPosterCanvas.add(nameText);
       fabricPosterCanvas.renderAll();
 
-      // Download - use Blob for mobile compatibility
+      // Convert canvas to Blob
       const dataURL = fabricPosterCanvas.toDataURL({
         format: 'png',
         quality: 1,
         multiplier: 1,
       });
 
-      // Convert data URL to Blob
       const byteString = atob(dataURL.split(',')[1]);
       const mimeString = dataURL.split(',')[0].split(':')[1].split(';')[0];
       const ab = new ArrayBuffer(byteString.length);
@@ -446,17 +445,25 @@ export default function Camera() {
         ia[i] = byteString.charCodeAt(i);
       }
       const blob = new Blob([ab], { type: mimeString });
-      const blobURL = URL.createObjectURL(blob);
 
-      const link = document.createElement('a');
-      link.download = 'wanted-poster.png';
-      link.href = blobURL;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      // Use Web Share API on mobile (saves directly to Photos on iOS)
+      if (navigator.share && /iPhone|iPad|Android/i.test(navigator.userAgent)) {
+        const file = new File([blob], 'wanted-poster.png', { type: 'image/png' });
+        await navigator.share({
+          files: [file],
+        });
+      } else {
+        // Fallback: blob download for desktop
+        const blobURL = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.download = 'wanted-poster.png';
+        link.href = blobURL;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        setTimeout(() => URL.revokeObjectURL(blobURL), 1000);
+      }
 
-      // Cleanup
-      setTimeout(() => URL.revokeObjectURL(blobURL), 1000);
       fabricPosterCanvas.dispose();
     } catch (error) {
       console.error('Download error:', error);
