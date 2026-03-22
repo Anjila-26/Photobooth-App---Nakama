@@ -267,21 +267,27 @@ export default function Camera() {
           const imgAspect = imgWidth / imgHeight;
           const frameAspect = photoWidth / photoHeight;
 
-          // Use cover logic: scale to fill the frame completely
+          // Use cover logic: scale to fill the frame completely, then center
           let scaleX, scaleY;
+          let offsetX = 0;
+          let offsetY = 0;
           if (imgAspect > frameAspect) {
-            // Image is wider - fit to height
+            // Image is wider - fit to height, center horizontally
             scaleY = photoHeight / imgHeight;
             scaleX = scaleY;
+            const scaledWidth = imgWidth * scaleX;
+            offsetX = -(scaledWidth - photoWidth) / 2;
           } else {
-            // Image is taller - fit to width
+            // Image is taller - fit to width, center vertically
             scaleX = photoWidth / imgWidth;
             scaleY = scaleX;
+            const scaledHeight = imgHeight * scaleY;
+            offsetY = -(scaledHeight - photoHeight) / 2;
           }
 
           photoImg.set({
-            left: photoLeft,
-            top: photoTop,
+            left: photoLeft + offsetX,
+            top: photoTop + offsetY,
             scaleX: scaleX,
             scaleY: scaleY,
             selectable: false,
@@ -518,7 +524,7 @@ export default function Camera() {
   if (showEditPage) {
     return (
       <div
-        className="min-h-screen flex flex-col items-center p-3 sm:p-6 gap-4 sm:gap-6"
+        className="min-h-screen flex flex-col items-center pb-6"
         style={{
           backgroundImage: 'url(/images/background.png)',
           backgroundSize: 'cover',
@@ -526,61 +532,91 @@ export default function Camera() {
           backgroundRepeat: 'no-repeat',
         }}
       >
-        {/* Header with title and close button */}
-        <div className="w-full max-w-4xl flex justify-between items-center">
-          <h1
-            className="text-white font-bold text-sm sm:text-lg md:text-2xl tracking-wider"
-            style={{
-              textShadow: '4px 4px 0px #000',
-              fontFamily: 'var(--font-press-start)',
-            }}
-          >
-            NAKAMA BOOTH
-          </h1>
-          <button
-            onClick={() => {
-              if (fabricCanvasRef.current) {
-                try {
-                  fabricCanvasRef.current.clear();
-                  fabricCanvasRef.current.dispose();
-                } catch (e) {
-                  console.warn('Canvas disposal error:', e);
+        {/* Fixed header with title, stickers, and action buttons */}
+        <div className="sticky top-0 z-10 w-full flex flex-col items-center px-3 sm:px-6 pt-3 sm:pt-6 pb-2 gap-2 sm:gap-3"
+          style={{ backgroundColor: 'rgba(88, 88, 152, 0.95)' }}
+        >
+          {/* Title and close */}
+          <div className="w-full max-w-4xl flex justify-between items-center">
+            <h1
+              className="text-white font-bold text-sm sm:text-lg md:text-2xl tracking-wider"
+              style={{
+                textShadow: '4px 4px 0px #000',
+                fontFamily: 'var(--font-press-start)',
+              }}
+            >
+              NAKAMA BOOTH
+            </h1>
+            <button
+              onClick={() => {
+                if (fabricCanvasRef.current) {
+                  try {
+                    fabricCanvasRef.current.clear();
+                    fabricCanvasRef.current.dispose();
+                  } catch (e) {
+                    console.warn('Canvas disposal error:', e);
+                  }
+                  fabricCanvasRef.current = null;
                 }
-                fabricCanvasRef.current = null;
-              }
-              setShowEditPage(false);
-              setUserName('');
-            }}
-            className="text-white text-2xl sm:text-3xl hover:opacity-80 transition-all"
-            style={{ textShadow: '2px 2px 0px #000' }}
-          >
-            ✕
-          </button>
-        </div>
+                setShowEditPage(false);
+                setUserName('');
+              }}
+              className="text-white text-2xl sm:text-3xl hover:opacity-80 transition-all"
+              style={{ textShadow: '2px 2px 0px #000' }}
+            >
+              ✕
+            </button>
+          </div>
 
-        {/* Horizontal Sticker Gallery */}
-        <div className="w-full max-w-4xl overflow-x-auto pb-2 hide-scrollbar">
-          <div className="flex gap-2 sm:gap-3 min-w-max px-1 sm:px-2">
-            {STICKERS.map((sticker, index) => (
-              <button
-                key={index}
-                onClick={() => addSticker(sticker)}
-                className="hover:opacity-80 transition-all p-1.5 sm:p-2 flex-shrink-0"
-                style={{
-                  backgroundColor: '#585898',
-                  width: '60px',
-                  height: '60px',
-                  border: 'none',
-                }}
-              >
-                <img src={sticker} alt={`Sticker ${index + 1}`} className="w-full h-full object-contain" />
-              </button>
-            ))}
+          {/* Horizontal Sticker Gallery */}
+          <div className="w-full max-w-4xl overflow-x-auto hide-scrollbar">
+            <div className="flex gap-2 sm:gap-3 min-w-max px-1 sm:px-2">
+              {STICKERS.map((sticker, index) => (
+                <button
+                  key={index}
+                  onClick={() => addSticker(sticker)}
+                  className="hover:opacity-80 transition-all p-1.5 sm:p-2 flex-shrink-0"
+                  style={{
+                    backgroundColor: '#585898',
+                    width: '60px',
+                    height: '60px',
+                    border: 'none',
+                  }}
+                >
+                  <img src={sticker} alt={`Sticker ${index + 1}`} className="w-full h-full object-contain" />
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Action buttons in header */}
+          <div className="flex gap-3 sm:gap-4">
+            <button
+              onClick={removeSticker}
+              className="px-4 sm:px-6 py-2 sm:py-2.5 bg-red-500 text-white hover:bg-red-600 font-bold text-xs sm:text-sm border-4 border-black shadow-2xl transition-all"
+              style={{
+                clipPath: 'polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px))',
+                fontFamily: 'var(--font-press-start)',
+              }}
+            >
+              DELETE
+            </button>
+            <button
+              onClick={downloadPoster}
+              className="px-4 sm:px-6 py-2 sm:py-2.5 text-black hover:opacity-80 font-bold text-xs sm:text-sm border-4 border-black shadow-2xl transition-all"
+              style={{
+                backgroundColor: '#F3CFEB',
+                clipPath: 'polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px))',
+                fontFamily: 'var(--font-press-start)',
+              }}
+            >
+              DOWNLOAD
+            </button>
           </div>
         </div>
 
-        {/* Main editing area */}
-        <div className="flex flex-col items-center gap-4 sm:gap-6 w-full">
+        {/* Main editing area - scrollable poster */}
+        <div className="flex flex-col items-center w-full px-3 sm:px-6 pt-4 sm:pt-6">
           {/* Wanted Poster with Fabric.js Canvas - scaled to fit viewport */}
           <div
             style={{
@@ -632,31 +668,6 @@ export default function Camera() {
                 </div>
               </div>
             </div>
-          </div>
-
-          {/* Action buttons below the poster */}
-          <div className="flex gap-3 sm:gap-4">
-            <button
-              onClick={removeSticker}
-              className="px-4 sm:px-6 py-2.5 sm:py-3 bg-red-500 text-white hover:bg-red-600 font-bold text-xs sm:text-sm border-4 border-black shadow-2xl transition-all"
-              style={{
-                clipPath: 'polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px))',
-                fontFamily: 'var(--font-press-start)',
-              }}
-            >
-              DELETE
-            </button>
-            <button
-              onClick={downloadPoster}
-              className="px-4 sm:px-6 py-2.5 sm:py-3 text-black hover:opacity-80 font-bold text-xs sm:text-sm border-4 border-black shadow-2xl transition-all"
-              style={{
-                backgroundColor: '#F3CFEB',
-                clipPath: 'polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px))',
-                fontFamily: 'var(--font-press-start)',
-              }}
-            >
-              DOWNLOAD
-            </button>
           </div>
         </div>
       </div>
