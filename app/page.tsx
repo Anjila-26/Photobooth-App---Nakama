@@ -430,17 +430,33 @@ export default function Camera() {
       fabricPosterCanvas.add(nameText);
       fabricPosterCanvas.renderAll();
 
-      // Download
-      const link = document.createElement('a');
-      link.download = 'wanted-poster.png';
-      link.href = fabricPosterCanvas.toDataURL({
+      // Download - use Blob for mobile compatibility
+      const dataURL = fabricPosterCanvas.toDataURL({
         format: 'png',
         quality: 1,
         multiplier: 1,
       });
-      link.click();
 
-      // Cleanup temporary canvas
+      // Convert data URL to Blob
+      const byteString = atob(dataURL.split(',')[1]);
+      const mimeString = dataURL.split(',')[0].split(':')[1].split(';')[0];
+      const ab = new ArrayBuffer(byteString.length);
+      const ia = new Uint8Array(ab);
+      for (let i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i);
+      }
+      const blob = new Blob([ab], { type: mimeString });
+      const blobURL = URL.createObjectURL(blob);
+
+      const link = document.createElement('a');
+      link.download = 'wanted-poster.png';
+      link.href = blobURL;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      // Cleanup
+      setTimeout(() => URL.revokeObjectURL(blobURL), 1000);
       fabricPosterCanvas.dispose();
     } catch (error) {
       console.error('Download error:', error);
