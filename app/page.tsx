@@ -47,11 +47,11 @@ export default function Camera() {
         video: { facingMode: 'user' },
         audio: false,
       });
-      
+
       if (videoRef.current) {
         videoRef.current.srcObject = mediaStream;
       }
-      
+
       setStream(mediaStream);
       setIsCameraOn(true);
       setError(null);
@@ -108,13 +108,13 @@ export default function Camera() {
       if (context) {
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
-        
+
         // Flip the image horizontally
         context.save();
         context.scale(-1, 1);
         context.drawImage(video, -canvas.width, 0, canvas.width, canvas.height);
         context.restore();
-        
+
         const imageDataUrl = canvas.toDataURL('image/png');
         // Add new photo to the array (limit to 1 photo)
         setCapturedImages(prev => {
@@ -245,13 +245,13 @@ export default function Camera() {
           const photoTop = 234.5 * scale; // ~154.7px
           const photoWidth = (684 - 59.5) * scale; // ~411.7px
           const photoHeight = (704 - 234.5) * scale; // ~309.6px
-          
+
           // Get the original dimensions to calculate aspect ratio
           const imgWidth = photoImg.width || 1;
           const imgHeight = photoImg.height || 1;
           const imgAspect = imgWidth / imgHeight;
           const frameAspect = photoWidth / photoHeight;
-          
+
           // Use cover logic: scale to fill the frame completely
           let scaleX, scaleY;
           if (imgAspect > frameAspect) {
@@ -263,7 +263,7 @@ export default function Camera() {
             scaleX = photoWidth / imgWidth;
             scaleY = scaleX;
           }
-          
+
           photoImg.set({
             left: photoLeft,
             top: photoTop,
@@ -279,7 +279,7 @@ export default function Camera() {
               absolutePositioned: true,
             }),
           });
-          
+
           canvas.add(photoImg);
 
           // Ensure photo is above frame's black rectangle
@@ -430,8 +430,8 @@ export default function Camera() {
   // Show name input modal
   if (showNameInput) {
     return (
-      <div 
-        className="min-h-screen flex items-center justify-center p-6"
+      <div
+        className="min-h-screen flex items-center justify-center p-4 sm:p-6"
         style={{
           backgroundImage: 'url(/images/background.png)',
           backgroundSize: 'cover',
@@ -439,15 +439,14 @@ export default function Camera() {
           backgroundRepeat: 'no-repeat',
         }}
       >
-        <div 
-          className="bg-white p-8 border-4 border-black shadow-2xl"
+        <div
+          className="bg-white p-6 sm:p-8 border-4 border-black shadow-2xl w-full"
           style={{
             clipPath: 'polygon(0 0, calc(100% - 15px) 0, 100% 15px, 100% 100%, 15px 100%, 0 calc(100% - 15px))',
             maxWidth: '500px',
-            width: '100%'
           }}
         >
-          <h2 className="text-2xl font-bold mb-6 text-center text-black" style={{ fontFamily: 'Times New Roman, serif' }}>
+          <h2 className="text-xl sm:text-2xl font-bold mb-6 text-center text-black" style={{ fontFamily: 'Times New Roman, serif' }}>
             Enter Your Name
           </h2>
           <input
@@ -456,8 +455,8 @@ export default function Camera() {
             value={userName}
             onChange={(e) => setUserName(e.target.value.toUpperCase())}
             placeholder="YOUR NAME"
-            className="w-full px-4 py-3 text-2xl font-bold border-4 border-black mb-6 text-center text-black active-route uppercase"
-            style={{ 
+            className="w-full px-4 py-3 text-xl sm:text-2xl font-bold border-4 border-black mb-6 text-center text-black active-route uppercase"
+            style={{
               fontFamily: 'Times New Roman, serif',
               clipPath: 'polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px))'
             }}
@@ -469,13 +468,13 @@ export default function Camera() {
               }
             }}
           />
-          <div className="flex gap-4">
+          <div className="flex gap-3 sm:gap-4">
             <button
               onClick={() => {
                 setShowNameInput(false);
                 setUserName('');
               }}
-              className="flex-1 px-6 py-3 bg-white text-black hover:opacity-80 font-bold text-sm border-4 border-black shadow-lg transition-all"
+              className="flex-1 px-4 sm:px-6 py-3 bg-white text-black hover:opacity-80 font-bold text-xs sm:text-sm border-4 border-black shadow-lg transition-all"
               style={{
                 fontFamily: 'Times New Roman, serif',
                 clipPath: 'polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px))'
@@ -485,7 +484,7 @@ export default function Camera() {
             </button>
             <button
               onClick={proceedToEdit}
-              className="flex-1 px-6 py-3 text-black hover:opacity-80 font-bold text-sm border-4 border-black shadow-lg transition-all"
+              className="flex-1 px-4 sm:px-6 py-3 text-black hover:opacity-80 font-bold text-xs sm:text-sm border-4 border-black shadow-lg transition-all"
               style={{
                 backgroundColor: '#F3CFEB',
                 fontFamily: 'Times New Roman, serif',
@@ -503,8 +502,8 @@ export default function Camera() {
   // If on edit page, show sticker editor
   if (showEditPage) {
     return (
-      <div 
-        className="min-h-screen flex flex-col items-center justify-center p-6 gap-6"
+      <div
+        className="min-h-screen flex flex-col items-center p-3 sm:p-6 gap-4 sm:gap-6"
         style={{
           backgroundImage: 'url(/images/background.png)',
           backgroundSize: 'cover',
@@ -514,8 +513,8 @@ export default function Camera() {
       >
         {/* Header with title and close button */}
         <div className="w-full max-w-4xl flex justify-between items-center">
-          <h1 
-            className="text-white font-bold text-2xl tracking-wider"
+          <h1
+            className="text-white font-bold text-sm sm:text-lg md:text-2xl tracking-wider"
             style={{
               textShadow: '4px 4px 0px #000',
               fontFamily: 'var(--font-press-start)',
@@ -537,7 +536,7 @@ export default function Camera() {
               setShowEditPage(false);
               setUserName('');
             }}
-            className="text-white text-3xl hover:opacity-80 transition-all"
+            className="text-white text-2xl sm:text-3xl hover:opacity-80 transition-all"
             style={{ textShadow: '2px 2px 0px #000' }}
           >
             ✕
@@ -545,17 +544,17 @@ export default function Camera() {
         </div>
 
         {/* Horizontal Sticker Gallery */}
-        <div className="w-full max-w-4xl overflow-x-auto pb-2">
-          <div className="flex gap-3 min-w-max px-2">
+        <div className="w-full max-w-4xl overflow-x-auto pb-2 hide-scrollbar">
+          <div className="flex gap-2 sm:gap-3 min-w-max px-1 sm:px-2">
             {STICKERS.map((sticker, index) => (
               <button
                 key={index}
                 onClick={() => addSticker(sticker)}
-                className="hover:opacity-80 transition-all p-2 flex-shrink-0"
+                className="hover:opacity-80 transition-all p-1.5 sm:p-2 flex-shrink-0"
                 style={{
                   backgroundColor: '#585898',
-                  width: '80px',
-                  height: '80px',
+                  width: '60px',
+                  height: '60px',
                   border: 'none',
                 }}
               >
@@ -566,24 +565,24 @@ export default function Camera() {
         </div>
 
         {/* Main editing area */}
-        <div className="flex flex-col items-center gap-6">
+        <div className="flex flex-col items-center gap-4 sm:gap-6 w-full">
           {/* Wanted Poster with Fabric.js Canvas */}
-          <div className="relative" ref={posterRef} style={{ width: '500px', height: '735px' }}>
+          <div className="poster-wrapper relative" ref={posterRef}>
             <canvas ref={editCanvasRef} />
 
             {/* Name text box positioned on the poster - matching SVG rect */}
             <div
               className="absolute flex items-center justify-center pointer-events-none"
               style={{
-                left: '39.5px',
-                top: '527px',
-                width: '402px',
-                height: '85.5px',
+                left: '7.9%',
+                top: '71.7%',
+                width: '80.4%',
+                height: '11.6%',
               }}
             >
               <div
                 data-name-text
-                className="font-bold text-center uppercase break-words px-4"
+                className="font-bold text-center uppercase break-words px-2 sm:px-4"
                 style={{
                   fontFamily: 'Times New Roman, serif',
                   fontSize: getDisplayFontSize(),
@@ -604,10 +603,10 @@ export default function Camera() {
           </div>
 
           {/* Action buttons below the poster */}
-          <div className="flex gap-4">
+          <div className="flex gap-3 sm:gap-4">
             <button
               onClick={removeSticker}
-              className="px-6 py-3 bg-red-500 text-white hover:bg-red-600 font-bold text-sm border-4 border-black shadow-2xl transition-all"
+              className="px-4 sm:px-6 py-2.5 sm:py-3 bg-red-500 text-white hover:bg-red-600 font-bold text-xs sm:text-sm border-4 border-black shadow-2xl transition-all"
               style={{
                 clipPath: 'polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px))',
                 fontFamily: 'var(--font-press-start)',
@@ -617,7 +616,7 @@ export default function Camera() {
             </button>
             <button
               onClick={downloadPoster}
-              className="px-6 py-3 text-black hover:opacity-80 font-bold text-sm border-4 border-black shadow-2xl transition-all"
+              className="px-4 sm:px-6 py-2.5 sm:py-3 text-black hover:opacity-80 font-bold text-xs sm:text-sm border-4 border-black shadow-2xl transition-all"
               style={{
                 backgroundColor: '#F3CFEB',
                 clipPath: 'polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px))',
@@ -633,8 +632,8 @@ export default function Camera() {
   }
 
   return (
-    <div 
-      className="min-h-screen flex gap-4 p-8"
+    <div
+      className="min-h-screen flex flex-col lg:flex-row gap-4 p-4 sm:p-6 lg:p-8"
       style={{
         backgroundImage: 'url(/images/background.png)',
         backgroundSize: 'cover',
@@ -643,11 +642,11 @@ export default function Camera() {
       }}
     >
       {/* Main camera section */}
-      <div className="flex-1 flex flex-col items-center justify-center gap-6">
+      <div className="flex-1 flex flex-col items-center justify-center gap-4 sm:gap-6">
         {error && (
-          <div 
-            className="text-black px-6 py-4 shadow-lg border-4 border-black"
-            style={{ 
+          <div
+            className="text-black px-4 sm:px-6 py-3 sm:py-4 shadow-lg border-4 border-black text-xs sm:text-sm"
+            style={{
               backgroundColor: '#F3CFEB',
               clipPath: 'polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px))'
             }}
@@ -658,12 +657,12 @@ export default function Camera() {
 
 
         {/* Countdown display above camera - always reserve space */}
-        <div style={{ height: '80px' }} className="flex items-center justify-center">
+        <div className="h-16 sm:h-20 flex items-center justify-center">
           {isCountingDown && countdown !== null && countdown > 0 && (
-            <div 
-              className="text-white font-bold border-4 border-white bg-black px-8 py-4"
+            <div
+              className="text-white font-bold border-4 border-white bg-black px-6 sm:px-8 py-3 sm:py-4"
               style={{
-                fontSize: '48px',
+                fontSize: 'clamp(32px, 8vw, 48px)',
                 clipPath: 'polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px))',
                 textShadow: '3px 3px 0px #F3CFEB'
               }}
@@ -674,9 +673,9 @@ export default function Camera() {
         </div>
 
         {/* Video preview */}
-        <div className="relative">
-          <div 
-            className="bg-white bg-opacity-90 p-4 border-4 border-black shadow-2xl"
+        <div className="relative w-full max-w-[640px]">
+          <div
+            className="bg-white bg-opacity-90 p-2 sm:p-4 border-4 border-black shadow-2xl"
             style={{
               clipPath: 'polygon(0 0, calc(100% - 15px) 0, 100% 15px, 100% 100%, 15px 100%, 0 calc(100% - 15px))'
             }}
@@ -685,21 +684,20 @@ export default function Camera() {
               ref={videoRef}
               autoPlay
               playsInline
-              className={`border-2 border-black ${isCameraOn ? 'block' : 'hidden'}`}
-              style={{ 
-                width: '640px', 
-                height: '480px', 
+              className={`w-full border-2 border-black ${isCameraOn ? 'block' : 'hidden'}`}
+              style={{
+                aspectRatio: '4 / 3',
                 transform: 'scaleX(-1)',
                 objectFit: 'cover'
               }}
             />
-            
+
             {!isCameraOn && capturedImages.length === 0 && (
-              <div 
-                className="w-full flex items-center justify-center border-2 border-black" 
-                style={{ width: '640px', height: '480px', backgroundColor: '#F3CFEB' }}
+              <div
+                className="w-full flex items-center justify-center border-2 border-black"
+                style={{ aspectRatio: '4 / 3', backgroundColor: '#F3CFEB' }}
               >
-                <p className="text-black text-sm font-bold px-4 text-center">
+                <p className="text-black text-xs sm:text-sm font-bold px-4 text-center">
                   Camera Off
                 </p>
               </div>
@@ -709,9 +707,9 @@ export default function Camera() {
 
         {/* Hidden canvas for capturing */}
         <canvas ref={canvasRef} className="hidden" />
-        
+
         {/* Controls */}
-        <div className="flex gap-4 flex-wrap justify-center">
+        <div className="flex gap-3 sm:gap-4 flex-wrap justify-center">
           {!isCameraOn ? (
             <>
               <input
@@ -723,8 +721,8 @@ export default function Camera() {
               />
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="px-8 py-4 text-black hover:opacity-80 font-bold text-sm border-4 border-black shadow-2xl transition-all"
-                style={{ 
+                className="px-5 sm:px-8 py-3 sm:py-4 text-black hover:opacity-80 font-bold text-xs sm:text-sm border-4 border-black shadow-2xl transition-all"
+                style={{
                   backgroundColor: '#F3CFEB',
                   clipPath: 'polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px))',
                   imageRendering: 'pixelated'
@@ -734,8 +732,8 @@ export default function Camera() {
               </button>
               <button
                 onClick={startCamera}
-                className="px-8 py-4 text-black hover:opacity-80 font-bold text-sm border-4 border-black shadow-2xl transition-all"
-                style={{ 
+                className="px-5 sm:px-8 py-3 sm:py-4 text-black hover:opacity-80 font-bold text-xs sm:text-sm border-4 border-black shadow-2xl transition-all"
+                style={{
                   backgroundColor: '#F3CFEB',
                   clipPath: 'polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px))',
                   imageRendering: 'pixelated'
@@ -749,8 +747,8 @@ export default function Camera() {
               <button
                 onClick={startCountdown}
                 disabled={capturedImages.length >= 1 || isCountingDown}
-                className="px-8 py-4 text-black hover:opacity-80 font-bold text-sm border-4 border-black shadow-2xl transition-all disabled:opacity-50"
-                style={{ 
+                className="px-5 sm:px-8 py-3 sm:py-4 text-black hover:opacity-80 font-bold text-xs sm:text-sm border-4 border-black shadow-2xl transition-all disabled:opacity-50"
+                style={{
                   backgroundColor: '#F3CFEB',
                   clipPath: 'polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px))'
                 }}
@@ -759,7 +757,7 @@ export default function Camera() {
               </button>
               <button
                 onClick={stopCamera}
-                className="px-8 py-4 bg-white text-black hover:opacity-80 font-bold text-sm border-4 border-black shadow-2xl transition-all"
+                className="px-5 sm:px-8 py-3 sm:py-4 bg-white text-black hover:opacity-80 font-bold text-xs sm:text-sm border-4 border-black shadow-2xl transition-all"
                 style={{
                   clipPath: 'polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px))'
                 }}
@@ -773,22 +771,22 @@ export default function Camera() {
 
       {/* Captured photos sidebar */}
       {capturedImages.length > 0 && (
-        <div 
-          className="w-80 bg-white bg-opacity-90 p-4 border-4 border-black shadow-2xl overflow-y-auto"
+        <div
+          className="w-full lg:w-80 bg-white bg-opacity-90 p-4 border-4 border-black shadow-2xl overflow-y-auto"
           style={{
             clipPath: 'polygon(0 0, calc(100% - 15px) 0, 100% 15px, 100% 100%, 15px 100%, 0 calc(100% - 15px))',
-            maxHeight: 'calc(100vh - 4rem)'
+            maxHeight: 'calc(100vh - 2rem)'
           }}
         >
           <div className="flex flex-col gap-2 mb-4">
             <div className="flex justify-between items-center">
-              <h3 className="text-sm font-bold text-black">
+              <h3 className="text-xs sm:text-sm font-bold text-black">
                 Photos ({capturedImages.length}/1)
               </h3>
               <button
                 onClick={clearAllPhotos}
                 className="px-3 py-2 text-black text-xs font-bold border-2 border-black hover:opacity-80 transition-all"
-                style={{ 
+                style={{
                   backgroundColor: '#F3CFEB',
                   clipPath: 'polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px))'
                 }}
@@ -796,12 +794,12 @@ export default function Camera() {
                 Clear All
               </button>
             </div>
-            
+
             {/* Next button */}
             <button
               onClick={goToEdit}
-              className="w-full px-4 py-3 text-black font-bold text-sm border-4 border-black hover:opacity-80 transition-all shadow-lg"
-              style={{ 
+              className="w-full px-4 py-3 text-black font-bold text-xs sm:text-sm border-4 border-black hover:opacity-80 transition-all shadow-lg"
+              style={{
                 backgroundColor: '#F3CFEB',
                 clipPath: 'polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px))'
               }}
@@ -809,11 +807,11 @@ export default function Camera() {
               Next: Add Stickers
             </button>
           </div>
-          
+
           <div className="flex flex-col gap-4">
             {capturedImages.map((image, index) => (
-              <div 
-                key={index} 
+              <div
+                key={index}
                 className="border-4 border-black shadow-lg"
                 style={{
                   clipPath: 'polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px))'
@@ -838,7 +836,7 @@ export default function Camera() {
                   <button
                     onClick={() => deletePhoto(index)}
                     className="flex-1 px-3 py-2 text-black text-xs font-bold border-2 border-black hover:opacity-80 transition-all"
-                    style={{ 
+                    style={{
                       backgroundColor: '#F3CFEB',
                       clipPath: 'polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px))'
                     }}
