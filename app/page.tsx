@@ -532,9 +532,8 @@ export default function Camera() {
           backgroundRepeat: 'no-repeat',
         }}
       >
-        {/* Fixed header with title, stickers, and action buttons */}
-        <div className="sticky top-0 z-10 w-full flex flex-col items-center px-3 sm:px-6 pt-3 sm:pt-6 pb-2 gap-2 sm:gap-3"
-          style={{ backgroundColor: 'rgba(88, 88, 152, 0.95)' }}
+        {/* Header with title and stickers */}
+        <div className="w-full flex flex-col items-center px-3 sm:px-6 pt-3 sm:pt-6 pb-2 gap-2 sm:gap-3"
         >
           {/* Title and close */}
           <div className="w-full max-w-4xl flex justify-between items-center">
@@ -589,30 +588,6 @@ export default function Camera() {
             </div>
           </div>
 
-          {/* Action buttons in header */}
-          <div className="flex gap-3 sm:gap-4">
-            <button
-              onClick={removeSticker}
-              className="px-4 sm:px-6 py-2 sm:py-2.5 bg-red-500 text-white hover:bg-red-600 font-bold text-xs sm:text-sm border-4 border-black shadow-2xl transition-all"
-              style={{
-                clipPath: 'polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px))',
-                fontFamily: 'var(--font-press-start)',
-              }}
-            >
-              DELETE
-            </button>
-            <button
-              onClick={downloadPoster}
-              className="px-4 sm:px-6 py-2 sm:py-2.5 text-black hover:opacity-80 font-bold text-xs sm:text-sm border-4 border-black shadow-2xl transition-all"
-              style={{
-                backgroundColor: '#F3CFEB',
-                clipPath: 'polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px))',
-                fontFamily: 'var(--font-press-start)',
-              }}
-            >
-              DOWNLOAD
-            </button>
-          </div>
         </div>
 
         {/* Main editing area - scrollable poster */}
@@ -669,6 +644,32 @@ export default function Camera() {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Action buttons below poster */}
+        <div className="flex justify-center gap-3 sm:gap-4 py-4 sm:py-6"
+        >
+          <button
+            onClick={removeSticker}
+            className="px-4 sm:px-6 py-2.5 sm:py-3 bg-red-500 text-white hover:bg-red-600 font-bold text-xs sm:text-sm border-4 border-black shadow-2xl transition-all"
+            style={{
+              clipPath: 'polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px))',
+              fontFamily: 'var(--font-press-start)',
+            }}
+          >
+            DELETE
+          </button>
+          <button
+            onClick={downloadPoster}
+            className="px-4 sm:px-6 py-2.5 sm:py-3 text-black hover:opacity-80 font-bold text-xs sm:text-sm border-4 border-black shadow-2xl transition-all"
+            style={{
+              backgroundColor: '#F3CFEB',
+              clipPath: 'polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px))',
+              fontFamily: 'var(--font-press-start)',
+            }}
+          >
+            DOWNLOAD
+          </button>
         </div>
       </div>
     );
