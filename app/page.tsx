@@ -547,7 +547,7 @@ export default function Camera() {
   if (showEditPage) {
     return (
       <div
-        className="min-h-screen flex flex-col items-center pb-6"
+        className="min-h-screen flex flex-col items-center pb-6 overflow-x-hidden"
         style={{
           backgroundImage: 'url(/images/background.png)',
           backgroundSize: 'cover',
@@ -700,7 +700,7 @@ export default function Camera() {
 
   return (
     <div
-      className="min-h-screen flex flex-col lg:flex-row gap-4 p-4 sm:p-6 lg:p-8"
+      className="min-h-screen flex flex-col lg:flex-row items-center lg:items-start gap-4 p-4 sm:p-6 lg:p-8 overflow-x-hidden"
       style={{
         backgroundImage: 'url(/images/background.png)',
         backgroundSize: 'cover',
