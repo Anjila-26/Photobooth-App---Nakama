@@ -39,6 +39,21 @@ export default function Camera() {
   const [showNameInput, setShowNameInput] = useState(false);
   const posterRef = useRef<HTMLDivElement>(null);
   const nameInputRef = useRef<HTMLInputElement>(null);
+  const [posterScale, setPosterScale] = useState(1);
+
+  // Calculate poster scale based on viewport width
+  useEffect(() => {
+    const updateScale = () => {
+      const padding = 24; // 12px each side (p-3)
+      const availableWidth = window.innerWidth - padding * 2;
+      const scale = Math.min(1, availableWidth / 500);
+      setPosterScale(scale);
+    };
+
+    updateScale();
+    window.addEventListener('resize', updateScale);
+    return () => window.removeEventListener('resize', updateScale);
+  }, []);
 
   // Start camera
   const startCamera = async () => {
@@ -566,38 +581,55 @@ export default function Camera() {
 
         {/* Main editing area */}
         <div className="flex flex-col items-center gap-4 sm:gap-6 w-full">
-          {/* Wanted Poster with Fabric.js Canvas */}
-          <div className="poster-wrapper relative" ref={posterRef}>
-            <canvas ref={editCanvasRef} />
-
-            {/* Name text box positioned on the poster - matching SVG rect */}
+          {/* Wanted Poster with Fabric.js Canvas - scaled to fit viewport */}
+          <div
+            style={{
+              width: `${500 * posterScale}px`,
+              height: `${735 * posterScale}px`,
+              overflow: 'hidden',
+            }}
+          >
             <div
-              className="absolute flex items-center justify-center pointer-events-none"
+              className="relative"
+              ref={posterRef}
               style={{
-                left: '7.9%',
-                top: '71.7%',
-                width: '80.4%',
-                height: '11.6%',
+                width: '500px',
+                height: '735px',
+                transform: `scale(${posterScale})`,
+                transformOrigin: 'top left',
               }}
             >
+              <canvas ref={editCanvasRef} />
+
+              {/* Name text box positioned on the poster - matching SVG rect */}
               <div
-                data-name-text
-                className="font-bold text-center uppercase break-words px-2 sm:px-4"
+                className="absolute flex items-center justify-center pointer-events-none"
                 style={{
-                  fontFamily: 'Times New Roman, serif',
-                  fontSize: getDisplayFontSize(),
-                  lineHeight: '1',
-                  color: '#000',
-                  maxWidth: '100%',
-                  wordWrap: 'break-word',
-                  letterSpacing: '6.6px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  transform: 'scaleY(1.5)', // Stretch text vertically by 1.5x
+                  left: '39.5px',
+                  top: '527px',
+                  width: '402px',
+                  height: '85.5px',
                 }}
               >
-                {userName || 'YOUR NAME'}
+                <div
+                  data-name-text
+                  className="font-bold text-center uppercase break-words px-4"
+                  style={{
+                    fontFamily: 'Times New Roman, serif',
+                    fontSize: getDisplayFontSize(),
+                    lineHeight: '1',
+                    color: '#000',
+                    maxWidth: '100%',
+                    wordWrap: 'break-word',
+                    letterSpacing: '6.6px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    transform: 'scaleY(1.5)', // Stretch text vertically by 1.5x
+                  }}
+                >
+                  {userName || 'YOUR NAME'}
+                </div>
               </div>
             </div>
           </div>
