@@ -346,6 +346,47 @@ export default function Camera() {
     };
   }, []);
 
+  // Custom delete control for stickers
+  const deleteControl = new fabric.Control({
+    x: 0.5,
+    y: -0.5,
+    offsetY: -10,
+    offsetX: 10,
+    cursorStyle: 'pointer',
+    mouseUpHandler: (_eventData, transform) => {
+      const canvas = transform.target.canvas;
+      if (canvas) {
+        canvas.remove(transform.target);
+        canvas.requestRenderAll();
+      }
+      return true;
+    },
+    render: (ctx, left, top, _styleOverride, fabricObject) => {
+      const size = 24;
+      ctx.save();
+      ctx.translate(left, top);
+      ctx.rotate(fabric.util.degreesToRadians(fabricObject.angle || 0));
+      // Red circle background
+      ctx.beginPath();
+      ctx.arc(0, 0, size / 2, 0, Math.PI * 2);
+      ctx.fillStyle = '#ff4444';
+      ctx.fill();
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      // White X
+      ctx.beginPath();
+      ctx.moveTo(-5, -5);
+      ctx.lineTo(5, 5);
+      ctx.moveTo(5, -5);
+      ctx.lineTo(-5, 5);
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+      ctx.restore();
+    },
+  });
+
   // Add sticker to Fabric.js canvas
   const addSticker = (stickerSrc: string) => {
     if (!fabricCanvasRef.current) return;
@@ -360,20 +401,13 @@ export default function Camera() {
         hasBorders: true,
       });
 
+      // Add delete control to this sticker
+      img.controls.deleteControl = deleteControl;
+
       fabricCanvasRef.current?.add(img);
       fabricCanvasRef.current?.setActiveObject(img);
       fabricCanvasRef.current?.renderAll();
     });
-  };
-
-  // Remove selected sticker from Fabric canvas
-  const removeSticker = () => {
-    if (!fabricCanvasRef.current) return;
-    const activeObject = fabricCanvasRef.current.getActiveObject();
-    if (activeObject && activeObject !== fabricCanvasRef.current.backgroundImage) {
-      fabricCanvasRef.current.remove(activeObject);
-      fabricCanvasRef.current.renderAll();
-    }
   };
 
   // Download the final poster using Fabric.js
@@ -669,22 +703,11 @@ export default function Camera() {
           </div>
         </div>
 
-        {/* Action buttons below poster */}
-        <div className="flex justify-center gap-3 sm:gap-4 py-4 sm:py-6"
-        >
-          <button
-            onClick={removeSticker}
-            className="px-4 sm:px-6 py-2.5 sm:py-3 bg-red-500 text-white hover:bg-red-600 font-bold text-xs sm:text-sm border-4 border-black shadow-2xl transition-all"
-            style={{
-              clipPath: 'polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px))',
-              fontFamily: 'var(--font-press-start)',
-            }}
-          >
-            DELETE
-          </button>
+        {/* Download button below poster */}
+        <div className="flex justify-center py-4 sm:py-6">
           <button
             onClick={downloadPoster}
-            className="px-4 sm:px-6 py-2.5 sm:py-3 text-black hover:opacity-80 font-bold text-xs sm:text-sm border-4 border-black shadow-2xl transition-all"
+            className="px-6 sm:px-8 py-2.5 sm:py-3 text-black hover:opacity-80 font-bold text-xs sm:text-sm border-4 border-black shadow-2xl transition-all"
             style={{
               backgroundColor: '#F3CFEB',
               clipPath: 'polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px))',
